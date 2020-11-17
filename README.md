@@ -1,3 +1,3 @@
 # web-audio-component
 
-[Demo live]: (https://mohamedtra.github.io/webaudio-component/)
+[I'm an inline-style link with title](https://mohamedtra.github.io/webaudio-component/ "Live demo")
