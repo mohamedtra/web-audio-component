@@ -130,7 +130,7 @@ div.controls input {
     <div class="duration clearfix">
     <div class="title-player"><h1>Music Player<h1/></div>
       <canvas id="myCanvas" width=500 height=100></canvas>
-      <div class="pull-right"><span class="play-current-time">00:00</span> / <span class="play-total-time">00:00</span></div>
+      <div class="pull-right"><span id="play-current-time" class="play-current-time">00:00</span> / <span id="play-total-time" class="play-total-time">00:00</span></div>
     </div>
     <br>
     <div class="controlpanel">
@@ -356,6 +356,10 @@ class MyAudioPlayer extends HTMLElement {
       this.playpause();
     });
 
+    this.shadowRoot.querySelector("#progressRuler").addEventListener("change", (event) => {
+      this.player.currentTime = event.target.value;
+      this.player.play();
+    });
 
     this.shadowRoot.querySelector("#stopButton").addEventListener("click", (event) => {
       this.stop();
@@ -402,6 +406,8 @@ class MyAudioPlayer extends HTMLElement {
     this.player.addEventListener('timeupdate', (event) => {
       console.log("time = " + this.player.currentTime + " total duration = " + this.player.duration);
       let progress = this.shadowRoot.querySelector("#progressRuler");
+      let currentTime = this.shadowRoot.querySelector("#play-current-time");
+      currentTime.innerHTML = this.convertTime(this.player.currentTime);
       try {
         progress.max = this.player.duration;
         progress.value = this.player.currentTime;
@@ -423,6 +429,8 @@ class MyAudioPlayer extends HTMLElement {
     this.panerNode.pan.value = val;
   }
   playpause() {
+    let total = this.shadowRoot.querySelector("#play-total-time");
+    total.innerHTML = this.convertTime(this.player.duration);
     if (!this.player.paused) {
       this.player.pause();
     } else {
@@ -444,6 +452,21 @@ class MyAudioPlayer extends HTMLElement {
       this.player.currentTime = (this.player.currentTime + 5);
     }
   }
+  convertTime (secs){
+    var hr,min,sec,ct;
+    if(secs<60){
+      sec = Math.floor(secs);
+      ct = Math.floor((secs - sec) * 100);
+      return sec+':'+ct;
+    }
+		hr  = Math.floor(secs / 3600);
+		min = Math.floor((secs - (hr * 3600))/60);
+		sec = Math.floor(secs - (hr * 3600) - (min * 60));
+
+		min = min>9?min:'0'+min;
+		sec = sec>9?sec:'0'+sec;
+		return min+':'+sec;
+	}
 
 }
 
